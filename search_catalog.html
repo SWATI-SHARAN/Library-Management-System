@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LM - Book Search Catalog</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Libre+Baskerville&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --parchment: #e6d5c3;
+      --leather-light: #bc9b72;
+      --leather-dark: #6d4c41;
+      --ink: #5d4037;
+      --cream: #fff8f0;
+      --glow-soft: rgba(200, 180, 150, 0.4);
+      --glow-light: rgba(246, 223, 188, 0.7);
+    }
+
+    body {
+      font-family: 'Libre Baskerville', serif;
+      background: var(--parchment) url("https://st.depositphotos.com/1681248/3460/v/450/depositphotos_34600259-stock-illustration-light-orange-soft-vector-abstract.jpg") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: var(--ink);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--cream);
+      text-shadow: 0 0 8px var(--leather-light);
+      text-align: center;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, var(--leather-light) 50%, transparent 100%);
+    }
+
+    /* Search input */
+    #searchInput {
+      width: 100%;
+      max-width: 600px;
+      display: block;
+      margin: 0 auto 2rem auto;
+      border-radius: 30px;
+      border: 1.5px solid var(--leather-light);
+      padding: 12px 20px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      background-color: var(--cream);
+      color: var(--ink);
+      box-shadow: 0 0 5px var(--glow-soft) inset;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      font-family: 'Libre Baskerville', serif;
+    }
+
+    #searchInput::placeholder {
+      color: #9e7d5e;
+    }
+
+    #searchInput:focus {
+      outline: none;
+      border-color: var(--glow-light);
+      box-shadow: 0 0 10px var(--glow-light);
+      background-color: #fffaf0;
+      color: var(--ink);
+    }
+
+    /* Status bar (top) */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      font-family: 'Cinzel', serif;
+      color: var(--leather-light);
+      font-size: 1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      user-select: none;
+    }
+
+    .status-bar > div {
+      background-color: rgba(215, 191, 163, 0.3);
+      padding: 6px 16px;
+      font-weight: 600;
+      border-radius: 20px;
+      box-shadow: 0 0 6px var(--glow-soft);
+    }
+
+    /* Filter buttons */
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .filter-btn {
+      background-color: var(--cream);
+      border: 1.5px solid var(--leather-light);
+      color: var(--leather-dark);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background-color: var(--leather-light);
+      color: var(--cream);
+      box-shadow: 0 0 15px 5px var(--glow-light);
+      border-color: var(--leather-light);
+    }
+
+    /* Results table */
+    table.chronicle-table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #ebd1b2;
+      font-weight: 600;
+      box-shadow: 0 0 6px var(--leather-light);
+      border-radius: 15px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(169,116,91,0.85), rgba(109,76,65,0.85), rgba(93,64,55,0.85));
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+
+    table.chronicle-table:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 20px 6px var(--glow-light);
+    }
+
+    table.chronicle-table thead th {
+      border-bottom: 2px solid var(--leather-light);
+      padding: 14px 18px;
+      text-align: left;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #ebd1b2;
+      text-shadow: 0 0 5px #c7a17a;
+      background: rgba(215, 191, 163, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    table.chronicle-table tbody tr {
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    table.chronicle-table tbody tr:hover {
+      background-color: rgba(246, 223, 188, 0.3);
+      color: var(--ink);
+      font-weight: 700;
+      box-shadow: 0 0 10px var(--glow-light);
+    }
+
+    table.chronicle-table tbody td {
+      padding: 12px 18px;
+      color: inherit;
+    }
+
+    /* Copies availability badges */
+    .copies-available {
+      font-weight: 700;
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+
+    .copies-available.zero {
+      background-color: rgba(239, 154, 154, 0.3);
+      color: #d32f2f;
+    }
+
+    .copies-available.low {
+      background-color: rgba(255, 224, 130, 0.3);
+      color: #ff8f00;
+    }
+
+    .copies-available.high {
+      background-color: rgba(129, 199, 132, 0.3);
+      color: #388e3c;
+    }
+
+    /* No results message */
+    #noResults {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.25rem;
+      color: var(--leather-light);
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      text-shadow: 0 0 5px #c7a17a;
+      display: none;
+    }
+    .back-btn {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 10px 20px;
+  border-radius: 30px;
+  background-color: var(--leather-light);
+  color: var(--cream);
+  text-decoration: none;
+  border: none;
+  box-shadow: 0 0 10px var(--glow-light);
+  transition: all 0.3s ease;
+  z-index: 999;
+}
+.back-btn:hover {
+  background-color: #a9745b;
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px var(--glow-light);
+}
+
+  </style>
+</head>
+<body>
+    <a href="Lib_Dash.html" class="back-btn"><i class="fas fa-arrow-left me-1"></i> Back to Dashboard</a>
+
+  <div class="container">
+    <h1><i class="fas fa-book-open me-2"></i>Library Catalog</h1>
+
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search by title, author, or genre..."
+      autocomplete="off"
+    />
+
+    <div class="status-bar">
+      <div>Total Books: <span id="totalBooks">0</span></div>
+      <div>Showing: <span id="booksShown">0</span></div>
+    </div>
+
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-filter="all">All Books</button>
+      <button class="filter-btn" data-filter="available">Available Now</button>
+      <button class="filter-btn" data-filter="classic">Classic</button>
+      <button class="filter-btn" data-filter="dystopian">Dystopian</button>
+      <button class="filter-btn" data-filter="thriller">Thriller</button>
+      <button class="filter-btn" data-filter="romance">Romance</button>
+    </div>
+
+    <table class="chronicle-table" aria-label="Search Results">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Genre</th>
+          <th>Availability</th>
+        </tr>
+      </thead>
+      <tbody id="resultsBody"></tbody>
+    </table>
+
+    <div id="noResults">No books found matching your search.</div>
+  </div>
+
+  <script>
+    const catalog = [
+      {
+        title: "The Great Gatsby",
+        author: "F. Scott Fitzgerald",
+        genre: "Classic",
+        copies: 4,
+      },
+      {
+        title: "1984",
+        author: "George Orwell",
+        genre: "Dystopian",
+        copies: 2,
+      },
+      {
+        title: "To Kill a Mockingbird",
+        author: "Harper Lee",
+        genre: "Classic",
+        copies: 0,
+      },
+      {
+        title: "Digital Fortress",
+        author: "Dan Brown",
+        genre: "Thriller",
+        copies: 3,
+      },
+      {
+        title: "Pride and Prejudice",
+        author: "Jane Austen",
+        genre: "Romance",
+        copies: 5,
+      },
+    ];
+
+    const resultsBody = document.getElementById("resultsBody");
+    const noResults = document.getElementById("noResults");
+    const searchInput = document.getElementById("searchInput");
+    const totalBooksSpan = document.getElementById("totalBooks");
+    const booksShownSpan = document.getElementById("booksShown");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+
+    let currentFilter = "all";
+    let currentSearchTerm = "";
+
+    function getAvailabilityClass(copies) {
+      if (copies === 0) return "zero";
+      if (copies <= 2) return "low";
+      return "high";
+    }
+
+    function renderResults(items) {
+      resultsBody.innerHTML = "";
+      booksShownSpan.textContent = items.length;
+      totalBooksSpan.textContent = catalog.length;
+
+      if (items.length === 0) {
+        noResults.style.display = "block";
+      } else {
+        noResults.style.display = "none";
+      }
+      items.forEach((book) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${book.title}</td>
+          <td>${book.author}</td>
+          <td>${book.genre}</td>
+          <td>
+            <span class="copies-available ${getAvailabilityClass(book.copies)}">
+              ${
+                book.copies === 0
+                  ? "Checked Out"
+                  : `${book.copies} Available`
+              }
+            </span>
+          </td>
+        `;
+        resultsBody.appendChild(tr);
+      });
+    }
+
+    function filterBooks() {
+      let filtered = [...catalog];
+      if (currentSearchTerm) {
+        filtered = filtered.filter(
+          (book) =>
+            book.title.toLowerCase().includes(currentSearchTerm) ||
+            book.author.toLowerCase().includes(currentSearchTerm) ||
+            book.genre.toLowerCase().includes(currentSearchTerm)
+        );
+      }
+      if (currentFilter !== "all") {
+        if (currentFilter === "available") {
+          filtered = filtered.filter((book) => book.copies > 0);
+        } else {
+          filtered = filtered.filter(
+            (book) => book.genre.toLowerCase() === currentFilter
+          );
+        }
+      }
+      renderResults(filtered);
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      currentSearchTerm = e.target.value.toLowerCase().trim();
+      filterBooks();
+    });
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        filterButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        filterBooks();
+      });
+    });
+
+    // Initial load
+    renderResults(catalog);
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

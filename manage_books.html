@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LM - Add Books</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Libre+Baskerville&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --parchment: #e6d5c3;
+      --leather-light: #bc9b72;
+      --leather-dark: #6d4c41;
+      --ink: #5d4037;
+      --cream: #fff8f0;
+      --glow-light: rgba(255, 255, 255, 0.6);
+      --glow-soft: rgba(200, 220, 255, 0.4);
+    }
+
+    body {
+      font-family: 'Libre Baskerville', serif;
+      background: var(--parchment) url("https://st.depositphotos.com/1681248/3460/v/450/depositphotos_34600259-stock-illustration-light-orange-soft-vector-abstract.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: var(--ink);
+      padding: 30px 15px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: linear-gradient(180deg, var(--leather-light) 0%, var(--leather-dark) 100%);
+      border-radius: 16px;
+      box-shadow: 0 0 20px 10px rgba(246, 223, 188, 0.3), inset 0 0 15px 6px rgba(246, 223, 188, 0.3);
+      padding: 30px 35px;
+      color: var(--cream);
+      max-width: 900px;
+      width: 100%;
+    }
+
+    h2, h3 {
+      font-family: 'Cinzel', serif;
+      font-weight: bold;
+      text-align: center;
+      color: var(--cream);
+      text-shadow: 0 0 8px var(--glow-soft);
+    }
+
+    .form-control {
+      background-color: var(--cream);
+      border: 2px solid var(--leather-dark);
+      font-weight: 600;
+      color: var(--ink);
+      box-shadow: inset 0 0 6px var(--glow-soft);
+      border-radius: 10px;
+    }
+
+    .form-control:focus {
+      border-color: var(--glow-light);
+      box-shadow: 0 0 15px var(--glow-light), inset 0 0 8px var(--glow-soft);
+    }
+
+    .btn {
+      font-family: 'Cinzel', serif;
+      font-weight: bold;
+      border-radius: 25px;
+      box-shadow: inset 0 0 8px var(--glow-soft);
+      transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+      background-color: #3e6a34;
+      box-shadow: 0 0 15px #a6d785;
+    }
+
+    .btn-secondary:hover {
+      background-color: #665d4a;
+      box-shadow: 0 0 15px #e0cdaa;
+    }
+
+    .table {
+      background-color: var(--cream);
+      color: var(--ink);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px var(--glow-soft);
+    }
+
+    .table th {
+      background-color: var(--leather-light);
+      color: var(--cream);
+      text-align: center;
+    }
+
+    .table td {
+      vertical-align: middle;
+      font-weight: 600;
+    }
+
+    .btn-sm {
+      font-size: 0.85rem;
+      padding: 5px 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2><i class="fas fa-book me-2"></i>Manage Library Books</h2>
+
+    <h3 class="mt-4 mb-3">📚 Add or Edit Book</h3>
+    <form id="formList" class="mb-4">
+      <div class="mb-3">
+        <label class="form-label">Title:</label>
+        <input type="text" class="form-control" id="title">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Author:</label>
+        <input type="text" class="form-control" id="author">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Genre:</label>
+        <input type="text" class="form-control" id="genre">
+      </div>
+
+      <button type="button" class="btn btn-success me-2" id="add">➕ Add Book</button>
+      <button type="button" class="btn btn-secondary" id="home">🏠 Dashboard</button>
+    </form>
+
+    <h3 class="mb-3">📖 Book List</h3>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped text-center">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="booklist"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+  <script>
+    let books = JSON.parse(localStorage.getItem("books") || "[]");
+    let editIndex = null;
+
+    function updateStorage() {
+      localStorage.setItem("books", JSON.stringify(books));
+    }
+
+    function renderBooks() {
+      const tbody = document.getElementById("booklist");
+      tbody.innerHTML = "";
+      books.forEach((book, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${book.title}</td>
+          <td>${book.author}</td>
+          <td>${book.genre}</td>
+          <td>${book.status}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="editBook(${index})">Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteBook(${index})">Delete</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function clearForm() {
+      document.getElementById("title").value = "";
+      document.getElementById("author").value = "";
+      document.getElementById("genre").value = "";
+      editIndex = null;
+      document.getElementById("add").textContent = "➕ Add Book";
+    }
+
+    function editBook(index) {
+      const book = books[index];
+      document.getElementById("title").value = book.title;
+      document.getElementById("author").value = book.author;
+      document.getElementById("genre").value = book.genre;
+      editIndex = index;
+      document.getElementById("add").textContent = "Update Book";
+    }
+
+    function deleteBook(index) {
+      if (confirm(`Are you sure you want to delete "${books[index].title}"?`)) {
+        books.splice(index, 1);
+        updateStorage();
+        renderBooks();
+      }
+    }
+
+    document.getElementById("add").addEventListener("click", () => {
+      const title = document.getElementById("title").value.trim();
+      const author = document.getElementById("author").value.trim();
+      const genre = document.getElementById("genre").value.trim();
+
+      if (!title || !author || !genre) {
+        alert("Please fill all fields.");
+        return;
+      }
+
+      if (editIndex !== null) {
+        books[editIndex] = { title, author, genre, status: "Available" };
+      } else {
+        books.push({ title, author, genre, status: "Available" });
+      }
+
+      updateStorage();
+      renderBooks();
+      clearForm();
+    });
+
+    document.getElementById("home").addEventListener("click", () => {
+      window.location.href = "lib_dash.html";
+    });
+
+    document.addEventListener("DOMContentLoaded", renderBooks);
+  </script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LM - Book Search & Filter</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Libre+Baskerville&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --parchment: #e6d5c3;
+      --leather-light: #bc9b72;
+      --leather-dark: #6d4c41;
+      --ink: #5d4037;
+      --cream: #fff8f0;
+      --glow-light: rgba(255, 235, 190, 0.4);
+      --glow-soft: rgba(200, 180, 150, 0.3);
+    }
+    body {
+      font-family: 'Libre Baskerville', serif;
+      background: var(--parchment) url("https://st.depositphotos.com/1681248/3460/v/450/depositphotos_34600259-stock-illustration-light-orange-soft-vector-abstract.jpg") fixed;
+      background-size: 100% 100%;
+      background-position: center;
+      min-height: 100vh;
+      padding: 2rem;
+      color: var(--ink);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .container {
+      background: linear-gradient(180deg, 
+        rgba(169, 116, 91, 0.6) 0%, 
+        rgba(109, 76, 65, 0.6) 60%, 
+        rgba(93, 64, 55, 0.6) 100%);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      max-width: 900px;
+      width: 100%;
+      transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+    .container:hover {
+      box-shadow: 
+        0 0 30px 12px rgba(255, 255, 255, 0.9),
+        0 0 50px 20px rgba(200, 220, 255, 0.7);
+      border: 2px solid #f0f8ff;
+      transform: translateY(-15px);
+    }
+    h2 {
+      color: white;
+      font-family: 'Cinzel', serif;
+      padding: 12px 24px;
+      border-radius: 10px;
+      display: inline-block;
+      text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #ffb347,
+        0 0 15px #ff8c00;
+      user-select: text;
+      margin-bottom: 30px;
+    }
+    .btn-outline-dark {
+      color: var(--cream);
+      border-color: var(--cream);
+      font-family: 'Cinzel';
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 0 8px var(--glow-soft);
+      border-radius: 25px;
+      padding: 10px 22px;
+      margin-left: 8px;
+      user-select: none;
+      background-color: transparent;
+    }
+    .btn-outline-dark:hover,
+    .btn-outline-dark:focus {
+      background: var(--leather-dark);
+      box-shadow: 0 0 25px 8px var(--glow-light), 0 0 40px 15px var(--glow-soft);
+      outline: none;
+      color: var(--cream);
+      text-decoration: none;
+    }
+    .btn-group {
+      margin-bottom: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .btn-group .btn {
+      border-radius: 25px;
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      padding: 10px 22px;
+      box-shadow: inset 0 0 10px #c9b494;
+      transition: all 0.3s ease;
+      user-select: none;
+      margin: 0 4px;
+    }
+    .btn-primary {
+      background-color: var(--leather-dark);
+      border-color: var(--leather-dark);
+      color: var(--cream);
+      box-shadow: 0 0 12px 4px var(--glow-soft);
+    }
+    .btn-primary:hover,
+    .btn-primary:focus {
+      background-color: var(--leather-light);
+      border-color: var(--leather-light);
+      color: var(--leather-dark);
+      box-shadow: 0 0 25px 10px var(--glow-light), inset 0 0 15px 5px var(--glow-light);
+    }
+    .btn-success {
+      background-color: #3e6a34;
+      border-color: #3e6a34;
+      color: var(--cream);
+      box-shadow: 0 0 10px 3px #a6d785;
+    }
+    .btn-success:hover {
+      background-color: #547f46;
+      box-shadow: 0 0 18px 5px #a6d785;
+    }
+    .btn-danger {
+      background-color: #aa4433dd;
+      border-color: #aa4433dd;
+      color: var(--cream);
+      box-shadow: 0 0 10px 3px #ff6a5a;
+    }
+    .btn-danger:hover {
+      background-color: #cc5740;
+      box-shadow: 0 0 18px 6px #ff6a5a;
+    }
+    .btn-info {
+      background-color: #5a7b9add;
+      border-color: #5a7b9add;
+      color: var(--cream);
+      box-shadow: 0 0 10px 3px #a5caff;
+    }
+    .btn-info:hover {
+      background-color: #7295bb;
+      box-shadow: 0 0 18px 5px #a5caff;
+    }
+    .btn-warning {
+      background-color: #b77c2add;
+      border-color: #b77c2add;
+      color: var(--cream);
+      box-shadow: 0 0 10px 3px var(--glow-light);
+    }
+    .btn-warning:hover {
+      background-color: #cca454;
+      box-shadow: 0 0 18px 6px var(--glow-light);
+    }
+    .btn-secondary {
+      background-color: #7a6e5cdd;
+      border-color: #7a6e5cdd;
+      color: var(--cream);
+      box-shadow: 0 0 10px 3px #c7b89a;
+    }
+    .btn-secondary:hover {
+      background-color: #8e7d69;
+      box-shadow: 0 0 18px 6px #c7b89a;
+    }
+    #search-input {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 30px;
+      border: 2px solid var(--leather-dark);
+      font-family: 'Libre Baskerville', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--ink);
+      background-color: var(--cream);
+      box-shadow: inset 0 0 10px var(--glow-soft);
+      margin-bottom: 28px;
+      transition: all 0.3s ease;
+      user-select: text;
+    }
+    #search-input::placeholder {
+      color: #a37f55;
+      font-weight: 600;
+    }
+    #search-input:focus {
+      outline: none;
+      border-color: var(--glow-light);
+      box-shadow:
+        0 0 25px 8px var(--glow-light),
+        0 0 40px 15px var(--glow-soft),
+        inset 0 0 15px 5px var(--glow-soft);
+      background-color: var(--cream);
+      color: var(--ink);
+    }
+    .column-headers {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 1fr 1fr;
+      font-weight: 500;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 0 1rem;
+    }
+    .column-header {
+      font-family: 'Cinzel', serif;
+      color: var(--cream);
+      text-shadow: 0 0 4px var(--leather-light);
+      padding: 0.5rem;
+      border-bottom: 2px solid var(--cream);
+      text-align: center;
+      user-select: none;
+    }
+    .list-group {
+      max-height: 340px;
+      overflow-y: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 15px 4px var(--glow-soft), inset 0 0 15px 6px var(--glow-soft);
+      background: linear-gradient(180deg, var(--leather-light) 0%, var(--leather-dark) 100%);
+      color: var(--cream);
+      user-select: text;
+    }
+    .list-group-item {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 1fr 1fr;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: var(--cream);
+      color: var(--ink);
+      border-radius: 10px;
+      font-weight: 600;
+      box-shadow: inset 0 0 6px var(--leather-light);
+      transition: all 0.3s ease;
+      user-select: text;
+      cursor: default;
+      margin: 0.25rem 0;
+      z-index: 0;
+      position: relative;
+    }
+    .list-group-item:hover {
+      box-shadow: 0 0 25px 10px var(--glow-light), 0 0 40px 15px var(--glow-soft);
+      transform: translateY(-12px);
+      z-index: 10;
+    }
+    /* Scrollbar styling like bookshelf */
+    ::-webkit-scrollbar {
+      width: 8px;
+      background-color: var(--parchment);
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--leather-dark);
+      border-radius: 8px;
+      box-shadow: inset 0 0 6px rgba(255,255,255,0.3);
+      transition: background-color 0.3s ease;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--leather-light);
+    }
+    /* Badges */
+    .badge {
+      font-family: 'Cinzel', serif;
+      padding: 0.5rem 1.1rem;
+      border-radius: 20px;
+      box-shadow: 0 0 6px var(--leather-light);
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+    .bg-success { background-color: #00C851 !important; }
+    .bg-danger { background-color: #ff4444 !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2><i class="fas fa-book me-2"></i>Book Search</h2>
+      <div>
+        <a href="User_dash.html" class="btn btn-outline-dark me-2">
+          <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+        </a>
+        <a href="Borrow_Return.html" class="btn btn-outline-dark">
+          <i class="fas fa-exchange-alt me-2"></i>Borrow/Return
+        </a>
+      </div>
+    </div>
+
+    <input type="text" id="search-input" placeholder="Search by title, author, or genre..." autocomplete="off" />
+
+    <div class="btn-group mb-4 w-100 flex-wrap">
+      <button class="btn btn-primary filter-btn active" data-filter="All">All</button>
+      <button class="btn btn-success filter-btn" data-filter="Available">Available</button>
+      <button class="btn btn-danger filter-btn" data-filter="Borrowed">Borrowed</button>
+      <button class="btn btn-info filter-btn" data-filter="Romance">Romance</button>
+      <button class="btn btn-warning filter-btn" data-filter="Fantasy">Fantasy</button>
+      <button class="btn btn-secondary filter-btn" data-filter="Historical">Historical</button>
+    </div>
+
+    <div class="column-headers">
+      <span class="column-header">Title</span>
+      <span class="column-header">Author</span>
+      <span class="column-header">Genre</span>
+      <span class="column-header">Status</span>
+    </div>
+
+    <ul id="book-list" class="list-group" aria-live="polite"></ul>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let books = [
+        { title: "Pride and Prejudice", author: "Jane Austen", genre: "Romance", status: "Available" },
+        { title: "The Hobbit", author: "J.R.R. Tolkien", genre: "Fantasy", status: "Borrowed" },
+        { title: "1984", author: "George Orwell", genre: "Historical", status: "Available" },
+        { title: "The Fault in Our Stars", author: "John Green", genre: "Romance", status: "Available" },
+        { title: "Harry Potter and the Sorcerer's Stone", author: "J.K. Rowling", genre: "Fantasy", status: "Borrowed" },
+        { title: "The Great Gatsby", author: "F. Scott Fitzgerald", genre: "Historical", status: "Available" },
+        { title: "Twilight", author: "Stephenie Meyer", genre: "Romance", status: "Borrowed" },
+        { title: "The Chronicles of Narnia", author: "C.S. Lewis", genre: "Fantasy", status: "Available" }
+      ];
+
+      const bookList = document.getElementById("book-list");
+      const searchInput = document.getElementById("search-input");
+      const filterButtons = document.querySelectorAll(".filter-btn");
+
+      function displayBooks(filteredBooks) {
+        bookList.innerHTML = filteredBooks.map((book) => `
+          <li class="list-group-item">
+            <span class="book-title">${book.title}</span>
+            <span class="book-author">${book.author}</span>
+            <span class="book-genre">${book.genre}</span>
+            <span class="badge bg-${book.status === 'Available' ? 'success' : 'danger'}">${book.status}</span>
+          </li>
+        `).join('');
+      }
+
+      searchInput.addEventListener("input", function () {
+        const query = this.value.toLowerCase();
+        const filteredBooks = books.filter(book =>
+          book.title.toLowerCase().includes(query) ||
+          book.author.toLowerCase().includes(query) ||
+          book.genre.toLowerCase().includes(query)
+        );
+        displayBooks(filteredBooks);
+      });
+
+      filterButtons.forEach(button => {
+        button.addEventListener("click", function () {
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          const filter = this.dataset.filter;
+          const filteredBooks = filter === "All" ? books : books.filter(book =>
+            book.status === filter || book.genre === filter
+          );
+          displayBooks(filteredBooks);
+        });
+      });
+
+      displayBooks(books);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LM - Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Libre Baskerville', serif;
+    }
+
+    body {
+      background: url("https://st.depositphotos.com/1681248/3460/v/450/depositphotos_34600259-stock-illustration-light-orange-soft-vector-abstract.jpg") no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .container {
+      background: linear-gradient(180deg, rgba(169, 116, 91, 0.6) 0%, rgba(109, 76, 65, 0.6) 60%, rgba(93, 64, 55, 0.6) 100%);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      transition: all 0.5s ease;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .container:hover {
+      box-shadow: 
+        0 0 30px 12px rgba(255, 255, 255, 0.9),
+        0 0 50px 20px rgba(200, 220, 255, 0.7);
+      transform: translateY(-15px);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+      transition: transform 0.5s ease;
+      color: #fff8f0;
+    }
+
+    .header h1 {
+      font-family: 'Cinzel', serif;
+      color: #fff8f0;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #ffb347,
+        0 0 15px #ff8c00;
+        
+    }
+    
+
+    .role-switcher {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .switch-btn {
+      padding: 10px 25px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-weight: 800;
+      color: #fff8f0;
+      z-index: 1;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .switch-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .slider {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background: rgba(255, 248, 240, 0.3);
+      border-radius: 20px;
+      z-index: 0;
+      transition: all 0.3s ease;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 40px 12px 15px;
+      border: 1px solid #c8b7a6;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #fff8f0;
+      color: #5d4037;
+    }
+
+    .form-group i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #5d4037;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #fff8f0;
+      color: #5d4037;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #f1c152;
+    }
+
+    .additional-links {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .additional-links a {
+      color: #fff8f0;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .additional-links a:hover {
+      color: #f1c152;
+      text-decoration: underline;
+    }
+
+    .student-view .slider {
+      transform: translateX(0%);
+    }
+
+    .librarian-view .slider {
+      transform: translateX(100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="container student-view" id="container">
+    <div class="header">
+      <i class="fas fa-book-open header-icon" id="mainIcon"></i>
+      <h1>LOGIN</h1>
+      <p><i>Login to your portal</i></p>
+    </div>
+
+    <div class="role-switcher">
+      <div class="slider"></div>
+      <button class="switch-btn active" onclick="switchRole('student')">Student</button>
+      <button class="switch-btn" onclick="switchRole('librarian')">Librarian</button>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <input type="email" placeholder="University Email" required />
+        <i class="fas fa-envelope"></i>
+      </div>
+      <div class="form-group">
+        <input type="password" placeholder="Password" required />
+        <i class="fas fa-lock"></i>
+      </div>
+      <button type="submit" class="btn">Login</button>
+    </form>
+
+    <div class="additional-links">
+      <a href="forgot-password.html">Forgot Password?</a><br /><br>
+      <a href="signup.html">New User? SignUp</a>
+    </div>
+  </div>
+
+  <script>
+    function switchRole(role) {
+      const container = document.getElementById('container');
+      const slider = document.querySelector('.slider');
+      const icon = document.getElementById('mainIcon');
+
+      if (role === 'student') {
+        container.className = 'container student-view';
+        slider.style.transform = 'translateX(0)';
+        icon.className = 'fas fa-book-open header-icon';
+      } else {
+        container.className = 'container librarian-view';
+        slider.style.transform = 'translateX(100%)';
+        icon.className = 'fas fa-user-shield header-icon';
+      }
+    }
+
+    // Form submission and validation
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent actual submission
+
+      const container = document.getElementById('container');
+      const email = document.querySelector('input[type="email"]').value.trim();
+      const password = document.querySelector('input[type="password"]').value;
+
+      if (!email.includes('@')) {
+        alert('Please enter a valid email address containing "@"');
+        return;
+      }
+
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters long');
+        return;
+      }
+
+      // Redirect based on role on form submission
+      if (container.classList.contains('student-view')) {
+        window.location.href = 'User_Dash.html';
+      } else if (container.classList.contains('librarian-view')) {
+        window.location.href = 'Lib_Dash.html';
+      }
+    });
+  </script>
+</body>
+</html>

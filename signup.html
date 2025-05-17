@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Libre+Baskerville&display=swap" rel="stylesheet">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <title>LM - Signup</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Libre Baskerville', serif;
+      color: #ffffff;
+      background: 
+        #e6d5c3 
+        url("https://st.depositphotos.com/1681248/3460/v/450/depositphotos_34600259-stock-illustration-light-orange-soft-vector-abstract.jpg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: linear-gradient(180deg, rgba(169, 116, 91, 0.6) 0%, rgba(109, 76, 65, 0.6) 60%, rgba(93, 64, 55, 0.6) 100%);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 1s ease-in-out;
+      transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+    .container:hover {
+      box-shadow: 
+        0 0 30px 12px rgba(255, 255, 255, 0.9),
+        0 0 50px 20px rgba(200, 220, 255, 0.7);
+      border: 2px solid #f0f8ff;
+      transform: translateY(-15px);
+    }
+
+    h2 {
+      color: white;      
+      font-family: 'Cinzel', serif;
+      padding: 12px 24px;
+      border-radius: 10px;
+      display: inline-block;
+      text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #ffb347,
+        0 0 15px #ff8c00;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      background-color: #fff8f0;
+      color: #5d4037;
+      font-weight: bold;
+      font-family: 'Libre Baskerville', serif;
+    }
+    select {
+      width: 104%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      background-color: #fff8f0;
+      color: #5d4037;
+      font-weight: bold;
+      font-family: 'Libre Baskerville', serif;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #f1c152;
+    }
+
+    a {
+      display: block;
+      width: 80%;
+      margin-top: 15px;
+      padding: 12px;
+      text-align: center;
+      background-color: #fff8f0;
+      color: #5d4037;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      background-color: #f1c152;
+    }
+
+    .error {
+      color: #ffcccc;
+      font-size: 0.9em;
+      width: 90%;
+      text-align: left;
+    }
+    .feather-icon {
+  margin-right: 8px;
+  vertical-align: middle;
+  transition: transform 0.3s ease;
+}
+button:hover .feather-icon {
+  transform: rotate(-15deg) scale(1.1);
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Sign Up</h2>
+      <p><i>SignUp to your portal</i></p>
+    <form id="signupForm" action="/signup" method="POST">
+      <input type="text" id="fullname" name="fullname" placeholder="Full Name" required />
+      <input type="email" id="email" name="email" placeholder="Email" required />
+      <input type="password" id="password" name="password" placeholder="Password" required />
+      <select id="role" name="role" required>
+        <option value="">Select Role</option>
+        <option value="student">Student</option>
+        <option value="librarian">Librarian</option>
+      </select>
+      <p class="error" id="errorMessage"></p>
+      <button type="submit">
+        <i class="fas fa-feather" style="margin-right: 8px;"></i>Sign Up
+      </button>
+    </form>
+    <script>
+  document.getElementById('signupForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const fullname = document.getElementById('fullname').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
+    const errorMessage = document.getElementById('errorMessage');
+
+    // Clear previous error
+    errorMessage.textContent = '';
+
+    // Basic validation
+    if (!email.includes('@')) {
+      errorMessage.textContent = 'Please enter a valid email address.';
+      return;
+    }
+
+    if (password.length < 6) {
+      errorMessage.textContent = 'Password must be at least 6 characters long.';
+      return;
+    }
+
+    if (!role) {
+      errorMessage.textContent = 'Please select a role.';
+      return;
+    }
+
+    // Simulate successful signup and redirect
+    alert('Signup successful!');
+    window.location.href = 'login.html';
+
+
+    // Prepare data to send to server
+    /*const formData = {
+      fullname,
+      email,
+      password,
+      role
+    };
+
+    try {
+      const response = await fetch('/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        alert('Signup successful!');
+        window.location.href = 'login.html';
+      } else {
+        const errorData = await response.json();
+        errorMessage.textContent = errorData.message || 'Signup failed. Try again.';
+      }
+    } catch (error) {
+      errorMessage.textContent = '';
+      console.error(error);
+    }*/
+  });
+</script>
+
+<a href="login.html" style="background: none; padding: 0; color: #fff8f0; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">Already have an account? Login</a>
+
+  </div>
+</body>
+</html>

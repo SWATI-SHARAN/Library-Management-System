@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LM - Book Borrowing & Return</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Libre+Baskerville&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --parchment: #e6d5c3;
+            --leather-light: #bc9b72;
+            --leather-dark: #6d4c41;
+            --ink: #5d4037;
+            --cream: #fff8f0;
+            --glow-light: rgba(255, 235, 190, 0.4);
+            --glow-soft: rgba(200, 180, 150, 0.3);
+        }
+
+        body {
+            font-family: 'Libre Baskerville', serif;
+            background: 
+                var(--parchment) 
+                url("https://st.depositphotos.com/1681248/3460/v/450/depositphotos_34600259-stock-illustration-light-orange-soft-vector-abstract.jpg") no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--ink);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            background: linear-gradient(
+                180deg, 
+                rgba(169, 116, 91, 0.6) 0%, 
+                rgba(109, 76, 65, 0.6) 60%, 
+                rgba(93, 64, 55, 0.6) 100%
+            );
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 900px;
+            transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .container:hover {
+            box-shadow: 
+                0 0 30px 12px rgba(255, 255, 255, 0.9),
+                0 0 50px 20px rgba(200, 220, 255, 0.7);
+            border: 2px solid #f0f8ff;
+            transform: translateY(-15px);
+        }
+
+        h2 {
+            color: white;
+            font-family: 'Cinzel', serif;
+            padding: 12px 24px;
+            border-radius: 10px;
+            display: inline-block;
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #ffb347,
+                0 0 15px #ff8c00;
+            user-select: text;
+        }
+
+        .column-headers {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1.5fr 1fr 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+        }
+
+        .column-header {
+            font-family: 'Cinzel', serif;
+            color: var(--cream);
+            text-shadow: 0 0 4px var(--leather-light);
+            padding: 0.5rem;
+            border-bottom: 2px solid var(--cream);
+            text-align: center;
+            user-select: none;
+        }
+
+        .list-group {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 12px;
+            box-shadow:
+                0 0 15px 4px var(--glow-soft),
+                inset 0 0 15px 6px var(--glow-soft);
+            background: linear-gradient(180deg, var(--leather-light) 0%, var(--leather-dark) 100%);
+            padding: 0;
+        }
+
+        .list-group-item {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1.5fr 1fr 1fr 1fr 1fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: var(--cream);
+            color: var(--ink);
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: inset 0 0 6px var(--leather-light);
+            transition: all 0.3s ease;
+            margin: 0.25rem 0;
+            position: relative;
+        }
+
+        .list-group-item:hover {
+            box-shadow:
+                0 0 25px 10px var(--glow-light),
+                0 0 40px 15px var(--glow-soft);
+            transform: translateY(-5px);
+            z-index: 2;
+        }
+
+        .btn-outline-dark {
+            color: var(--cream);
+            border-color: var(--cream);
+            font-family: 'Cinzel';
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 8px var(--glow-soft);
+        }
+
+        .btn-outline-dark:hover {
+            background: var(--leather-dark);
+            box-shadow: 0 0 15px var(--glow-light);
+        }
+
+        .badge {
+            font-family: 'Cinzel', serif;
+            padding: 0.5rem 1.1rem;
+            border-radius: 20px;
+            box-shadow: 0 0 6px var(--leather-light);
+        }
+
+        .bg-success { background-color: #3e6a34dd !important; }
+        .bg-danger { background-color: #aa4433dd !important; }
+
+        .btn-action {
+            padding: 0.35rem 1rem;
+            font-family: 'Cinzel';
+            box-shadow: 0 0 6px var(--glow-soft);
+            transition: all 0.3s ease;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            background-color: var(--parchment);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--leather-dark);
+            border-radius: 8px;
+            box-shadow: inset 0 0 6px rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-exchange-alt me-2"></i>Book Transactions</h2>
+            <div>
+                <a href="User_dash.html" class="btn btn-outline-dark me-2">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a href="book_search.html" class="btn btn-outline-dark">
+                    <i class="fas fa-book me-2"></i>Book Search
+                </a>
+            </div>
+        </div>
+
+        <div class="column-headers">
+            <span class="column-header">Book ID</span>
+            <span class="column-header">Title</span>
+            <span class="column-header">Author</span>
+            <span class="column-header">Status</span>
+            <span class="column-header">Issue Date</span>
+            <span class="column-header">Due Date</span>
+            <span class="column-header">Actions</span>
+        </div>
+
+        <div class="list-group">
+            <!-- Demo Data -->
+            <div class="list-group-item">
+                <span>001</span>
+                <span>The Great Gatsby</span>
+                <span>F. Scott Fitzgerald</span>
+                <span><span class="badge bg-success">Available</span></span>
+                <span>-</span>
+                <span>-</span>
+                <span>
+                    <button class="btn btn-success btn-action borrow-btn">Borrow</button>
+                    <button class="btn btn-danger btn-action return-btn" disabled>Return</button>
+                </span>
+            </div>
+
+            <div class="list-group-item">
+                <span>002</span>
+                <span>1984</span>
+                <span>George Orwell</span>
+                <span><span class="badge bg-danger">Borrowed</span></span>
+                <span>2023-08-01</span>
+                <span>2023-08-15</span>
+                <span>
+                    <button class="btn btn-success btn-action borrow-btn" disabled>Borrow</button>
+                    <button class="btn btn-danger btn-action return-btn">Return</button>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("click", function (event) {
+            if (event.target.classList.contains("borrow-btn")) {
+                const row = event.target.closest(".list-group-item");
+                const statusBadge = row.querySelector(".badge");
+                const returnButton = row.querySelector(".return-btn");
+                const issueDate = row.children[4];
+                const dueDate = row.children[5];
+                
+                const today = new Date();
+                const due = new Date(today);
+                due.setDate(today.getDate() + 14);
+                
+                statusBadge.textContent = "Borrowed";
+                statusBadge.classList.replace("bg-success", "bg-danger");
+                returnButton.disabled = false;
+                event.target.disabled = true;
+                issueDate.textContent = today.toISOString().split("T")[0];
+                dueDate.textContent = due.toISOString().split("T")[0];
+            }
+            
+            if (event.target.classList.contains("return-btn")) {
+                const row = event.target.closest(".list-group-item");
+                const statusBadge = row.querySelector(".badge");
+                const borrowButton = row.querySelector(".borrow-btn");
+                const issueDate = row.children[4];
+                const dueDate = row.children[5];
+                
+                statusBadge.textContent = "Available";
+                statusBadge.classList.replace("bg-danger", "bg-success");
+                event.target.disabled = true;
+                borrowButton.disabled = false;
+                issueDate.textContent = "-";
+                dueDate.textContent = "-";
+            }
+        });
+    </script>
+</body>
+</html>

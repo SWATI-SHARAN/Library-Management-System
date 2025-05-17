@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LM - Digital Bookshelf</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Libre+Baskerville&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    .book {
+  position: relative;
+  flex: 0 0 auto;
+  width: 120px;    /* book width */
+  height: 180px;   /* book height */
+  margin-right: 20px;
+  background: linear-gradient(135deg, #fef7f1, #d7c3b3); /* hardcover gradient */
+  border-radius: 6px 10px 10px 6px;
+  padding: 12px 10px 16px 24px;  /* extra left padding for spine */
+  box-shadow:
+    6px 0 8px -2px rgba(115, 90, 65, 0.8),  /* shadow for book thickness */
+    2px 2px 6px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: visible;
+  z-index: 1;
+}
+
+/* The spine - thick left strip with skew */
+.book::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 4px;
+  width: 14px;  /* spine thickness */
+  height: calc(100% - 62px);
+  background: linear-gradient(180deg, #a1785e, #6d4c41);
+  border-radius: 4px 2px 2px 4px;
+  box-shadow: inset -2px 0 4px rgba(255, 255, 255, 0.3);
+  transform: skewY(-10deg);
+  z-index: 2;
+}
+
+/* Front book cover image */
+.book img {
+  width: 92px;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
+  position: relative;
+  z-index: 3;
+}
+
+/* Title below cover */
+.book-title {
+    
+        font-family: 'Libre Baskerville', serif;
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #3e2723;
+  text-align: center;
+  z-index: 3;
+  user-select: none;
+}
+
+/* Shadow under the book simulating it resting */
+.book::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 20px;
+  width: 90px;
+  height: 14px;
+  background: rgba(0, 0, 0, 0.12);
+  filter: blur(6px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Hover effect: lift and slight rotation for 3D realism */
+.book:hover {
+  transform: translateY(-15px) rotateY(10deg);
+  box-shadow:
+    8px 6px 15px rgba(0, 0, 0, 0.4),
+    6px 0 10px -2px rgba(115, 90, 65, 0.9);
+  z-index: 10;
+}
+
+
+body {
+    font-family: 'Libre Baskerville', serif;
+    color: #3e2723;
+    background: 
+        /* Fallback color */
+        #e6d5c3 
+        /* Actual image URL (replace with your direct link) */
+        url("https://st.depositphotos.com/1681248/3460/v/450/depositphotos_34600259-stock-illustration-light-orange-soft-vector-abstract.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+
+    h1 {        
+      font-family: 'Cinzel', serif;
+      text-align: center;
+      font-size: 2.8rem;
+      margin: 40px 0 20px;
+      color: #5d4037;
+    }
+
+    .bookshelf-section {
+      margin: 60px 0;
+      padding: 0 20px;
+    }
+
+    .bookshelf-section h2 {
+        font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #4e342e;
+    }
+
+    .shelf-container {
+      position: relative;
+    }
+
+    .book-row {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding: 10px 0;
+    }
+
+    .book {
+      flex: 0 0 auto;
+      width: 160px;
+      margin-right: 16px;
+      background: #fff8f0;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+      transition: transform 0.3s ease;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+      border: 1px solid #d7ccc8;
+    }
+
+    .book:hover {
+      transform: translateY(-5px);
+    }
+
+    .book img {
+      width: 100%;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .book-title {
+    font-family: 'Libre Baskerville', serif;
+      font-size: 14px;
+      color: #3e2723;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 35%;
+      background-color: rgba(255,255,255,0.9);
+      color: #6d4c41;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 8px 12px;
+      z-index: 2;
+      border-radius: 5px;
+      box-shadow: 1px 1px 6px rgba(0,0,0,0.2);
+    }
+
+    .arrow:hover {
+      background-color: #fce4ec;
+    }
+
+    .arrow.left {
+      left: -10px;
+    }
+
+    .arrow.right {
+      right: -10px;
+    }
+
+    .book-row::-webkit-scrollbar {
+      height: 8px;
+    }
+    .book-row::-webkit-scrollbar-track {
+      background: #f3e8dc;
+    }
+    .book-row::-webkit-scrollbar-thumb {
+      background: #a1887f;
+      border-radius: 4px;
+    }
+
+  .shelf-container {
+    position: relative;
+    padding: 40px 40px; /* extra padding for arrows */
+    background: linear-gradient(180deg, #a9745b 0%, #6d4c41 60%, #5d4037 100%);
+    box-shadow: inset 0 6px 10px rgba(255 255 255 / 0.2),
+                inset 0 -8px 6px rgba(0 0 0 / 0.6);
+    border-radius: 10px 10px 8px 8px;
+    margin-bottom: 40px;
+  }
+
+  .book-row {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 35px;
+    border-bottom: 8px solid #4e342e; /* shelf edge */
+    background: linear-gradient(to bottom, transparent 80%, #3e2723 100%);
+    box-shadow: inset 0 -4px 6px rgba(0 0 0 / 0.4);
+    border-radius: 0 0 6px 6px;
+  }
+
+  .book {
+    flex: 0 0 auto;
+    width: 160px;
+    height: 250px;
+    margin-right: 16px;
+    background: #fff8f0;
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+    border: 1px solid #d7ccc8;
+    position: relative;
+  }
+
+  /* Shadow as if book rests on shelf */
+  .book::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    left: 10px;
+    width: 120px;
+    height: 10px;
+    background: rgba(0,0,0,0.1);
+    filter: blur(6px);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .book:hover {
+    transform: translateY(-5px);
+    box-shadow: 4px 8px 12px rgba(0,0,0,0.3);
+  }
+
+  .arrow {
+    position: absolute;
+    top: 40%;
+    background-color: rgba(255,255,255,0.95);
+    color: #6d4c41;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    padding: 10px 14px;
+    z-index: 3;
+    border-radius: 5px;
+    box-shadow: 1px 1px 8px rgba(0,0,0,0.3);
+    transition: background-color 0.2s ease;
+  }
+
+  .arrow:hover {
+    background-color: #fce4ec;
+  }
+
+  .arrow.left {
+    left: 8px;
+  }
+
+  .arrow.right {
+    right: 8px;
+  }
+  .nav-buttons {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  z-index: 1000;
+}
+
+.dashboard-btn {
+  background-color: rgba(255,255,255,0.9);
+  color: #6d4c41;
+  padding: 10px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  border: 1px solid #d7ccc8;
+}
+
+.dashboard-btn:hover {
+  background-color: #fce4ec;
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 12px rgba(0,0,0,0.2);
+}
+
+.dashboard-btn i {
+  margin-right: 8px;
+}
+
+</style>
+</head>
+<body>
+  <div class="nav-buttons">
+    <a href="User_dash.html" class="dashboard-btn">
+      <i class="fas fa-tachometer-alt"></i> Dashboard
+    </a>
+  </div>
+  <!-- Background Layers -->
+
+  <h1><i class="fas fa-book-reader"></i> Library Digital Bookshelf</h1>
+
+  <!-- Section 1 -->
+  <div class="bookshelf-section">
+    <h2>Popular Classics</h2>
+    <div class="shelf-container">
+      <button class="arrow left" onclick="scrollShelf('shelf1', -300)"><i class="fas fa-chevron-left"></i></button>
+      <div class="book-row" id="shelf1">
+        <!-- Add books here like before -->
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8231856-L.jpg"><div class="book-title">1984</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8279250-L.jpg"><div class="book-title">The Alchemist</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8262185-L.jpg"><div class="book-title">The Hobbit</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8235112-L.jpg"><div class="book-title">Pride & Prejudice</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8228691-L.jpg"><div class="book-title">Dracula</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8234092-L.jpg"><div class="book-title">Frankenstein</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8225636-L.jpg"><div class="book-title">Hamlet</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8247264-L.jpg"><div class="book-title">Little Women</div></div>
+      </div>
+      <button class="arrow right" onclick="scrollShelf('shelf1', 300)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="bookshelf-section">
+    <h2>Recommended Reads</h2>
+    <div class="shelf-container">
+      <button class="arrow left" onclick="scrollShelf('shelf2', -300)"><i class="fas fa-chevron-left"></i></button>
+      <div class="book-row" id="shelf2">
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8319587-L.jpg"><div class="book-title">Jane Eyre</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8235191-L.jpg"><div class="book-title">Wuthering Heights</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8333018-L.jpg"><div class="book-title">Anna Karenina</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8244815-L.jpg"><div class="book-title">Great Expectations</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8311076-L.jpg"><div class="book-title">Emma</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8329516-L.jpg"><div class="book-title">Oliver Twist</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8241806-L.jpg"><div class="book-title">A Tale of Two Cities</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8333018-L.jpg"><div class="book-title">Anna Karenina</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8244815-L.jpg"><div class="book-title">Great Expectations</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8311076-L.jpg"><div class="book-title">Emma</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8333018-L.jpg"><div class="book-title">Anna Karenina</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8244815-L.jpg"><div class="book-title">Great Expectations</div></div>
+        <div class="book"><img src="https://covers.openlibrary.org/b/id/8311076-L.jpg"><div class="book-title">Emma</div></div>
+
+      </div>
+      <button class="arrow right" onclick="scrollShelf('shelf2', 300)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <script>
+    function scrollShelf(shelfId, scrollAmount) {
+      const shelf = document.getElementById(shelfId);
+      shelf.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+
+
+  </script>
+
+</body>
+</html>

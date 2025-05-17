@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LM - Librarian Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Libre+Baskerville&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Libre Baskerville', serif;
+      background: #e6d5c3 url("https://st.depositphotos.com/1681248/3460/v/450/depositphotos_34600259-stock-illustration-light-orange-soft-vector-abstract.jpg") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      padding-bottom: 50px;
+      color: #fff8f0;
+    }
+    .navbar-brand {
+      font-family: 'Cinzel', serif;
+      font-weight: bold;
+      color: #f8eede;
+      text-shadow: 0 0 8px #b5896a;
+    }
+    .dashboard-card {
+      background: linear-gradient(180deg, rgba(169,116,91,0.85), rgba(109,76,65,0.85), rgba(93,64,55,0.85));
+      border-radius: 15px;
+      border: 2px solid #d7bfa3;
+      box-shadow: 0 0 12px 3px rgba(246, 223, 188, 0.6), inset 0 0 15px 1px rgba(246, 223, 188, 0.5);
+      color: #fff8f0;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 20px 5px #f6dfbc, inset 0 0 20px 3px #f6dfbc;
+    }
+    .dashboard-card .card-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      text-shadow: 0 0 5px #d7bfa3;
+    }
+    .dashboard-card .card-text {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-shadow: 0 0 6px #b58c68;
+    }
+    .action-links .btn {
+      margin: 8px;
+      font-family: 'Cinzel', serif;
+      border-radius: 25px;
+      font-weight: bold;
+    }
+    .cream-calendar {
+      background: #fff8f0 !important;
+      color: #5d4037 !important;
+      border: 2px solid #d7bfa3 !important;
+    }
+    .calendar-cell {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .today {
+      background: #a9745b !important;
+      color: #fff8f0 !important;
+      box-shadow: 0 0 8px rgba(169,116,91,0.5) !important;
+    }
+    .notice-dot {
+      width: 6px;
+      height: 6px;
+      background: #6d4c41;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      right: 3px;
+    }
+    .notice-item {
+      background: rgba(109,76,65,0.7);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-left: 3px solid #d7bfa3;
+      transition: all 0.3s ease;
+    }
+    .notice-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 0 8px rgba(246,223,188,0.6);
+    }
+    .delete-notice {
+      color: #ff4444;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <nav class="navbar navbar-dark bg-dark mb-4 rounded">
+      <div class="container-fluid d-flex justify-content-between align-items-center">
+        <span class="navbar-brand h1"><i class="fas fa-book-reader me-2"></i>Librarian Dashboard</span>
+        <div class="d-flex align-items-center">
+          <span class="me-3">Welcome, <strong>Librarian</strong></span>
+          <a href="login.html" class="btn btn-outline-light">Logout</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="dashboard-card p-4 text-center">
+          <div class="card-title">Books Issued</div>
+          <div class="card-text">42</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="dashboard-card p-4 text-center">
+          <div class="card-title">Pending Returns</div>
+          <div class="card-text">5</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="dashboard-card p-4 text-center">
+          <div class="card-title">Total Books</div>
+          <div class="card-text">216</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-card p-4 mb-4">
+      <h4 class="mb-3 text-center"><i class="fas fa-tools me-2"></i>Quick Actions</h4>
+      <div class="d-flex flex-wrap justify-content-center action-links">
+        <a href="manage_books.html" class="btn btn-outline-light"><i class="fas fa-plus me-2"></i>Add New Book</a>
+        <a href="Issued_books.html" class="btn btn-outline-light"><i class="fas fa-book-reader me-2"></i>Manage Issued Books</a>
+        <a href="search_catalog.html" class="btn btn-outline-light"><i class="fas fa-search me-2"></i>Search Catalog</a>
+        <a href="manage_users.html" class="btn btn-outline-light"><i class="fas fa-users-cog me-2"></i>Manage Users</a>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-4 mb-4">
+        <div class="dashboard-card p-3 cream-calendar">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <button class="btn btn-sm btn-outline-secondary" onclick="changeMonth(-1)">&lt;</button>
+            <h5 id="calendar-month" class="mb-0" style="font-family: 'Cinzel'; color: #5d4037;"></h5>
+            <button class="btn btn-sm btn-outline-secondary" onclick="changeMonth(1)">&gt;</button>
+          </div>
+          <div class="days-grid d-grid gap-1 mb-2" style="grid-template-columns: repeat(7, 1fr);">
+            <div class="text-center" style="color: #5d4037;">S</div>
+            <div class="text-center" style="color: #5d4037;">M</div>
+            <div class="text-center" style="color: #5d4037;">T</div>
+            <div class="text-center" style="color: #5d4037;">W</div>
+            <div class="text-center" style="color: #5d4037;">T</div>
+            <div class="text-center" style="color: #5d4037;">F</div>
+            <div class="text-center" style="color: #5d4037;">S</div>
+          </div>
+          <div class="dates-grid d-grid gap-1" id="calendar-dates" style="grid-template-columns: repeat(7, 1fr);"></div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="dashboard-card p-3 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0"><i class="fas fa-bullhorn me-2"></i>Library Notices</h4>
+            <button class="btn btn-sm btn-outline-light" onclick="showAddNotice()">
+              <i class="fas fa-plus"></i> Add Notice
+            </button>
+          </div>
+          <div id="notice-list"></div>
+          <div id="add-notice-form" class="mt-3" style="display: none;">
+            <textarea id="new-notice" class="form-control mb-2" rows="2" placeholder="Enter new notice..."></textarea>
+            <button class="btn btn-sm btn-outline-light me-2" onclick="addNotice()">Save</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="cancelAddNotice()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    let notices = JSON.parse(localStorage.getItem('libraryNotices')) || [];
+    let today = new Date();
+    let viewMonth = today.getMonth();
+    let viewYear = today.getFullYear();
+
+    function generateCalendar() {
+      const datesGrid = document.getElementById('calendar-dates');
+      const monthYearDisplay = document.getElementById('calendar-month');
+      datesGrid.innerHTML = '';
+
+      const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+      const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+      monthYearDisplay.textContent = new Date(viewYear, viewMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+      for (let i = 0; i < firstDay; i++) {
+        datesGrid.innerHTML += '<div class="calendar-cell"></div>';
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateCell = document.createElement('div');
+        dateCell.className = 'calendar-cell';
+        dateCell.textContent = day;
+
+        if (
+          day === today.getDate() &&
+          viewMonth === today.getMonth() &&
+          viewYear === today.getFullYear()
+        ) {
+          dateCell.classList.add('today');
+        }
+
+        if (notices.some(notice => {
+          const noticeDate = new Date(notice.date);
+          return noticeDate.getDate() === day && noticeDate.getMonth() === viewMonth && noticeDate.getFullYear() === viewYear;
+        })) {
+          dateCell.innerHTML += '<div class="notice-dot"></div>';
+        }
+
+        datesGrid.appendChild(dateCell);
+      }
+    }
+
+    function changeMonth(offset) {
+      viewMonth += offset;
+      if (viewMonth > 11) {
+        viewMonth = 0;
+        viewYear++;
+      } else if (viewMonth < 0) {
+        viewMonth = 11;
+        viewYear--;
+      }
+      generateCalendar();
+    }
+
+    function showAddNotice() {
+      document.getElementById('add-notice-form').style.display = 'block';
+    }
+
+    function cancelAddNotice() {
+      document.getElementById('add-notice-form').style.display = 'none';
+      document.getElementById('new-notice').value = '';
+    }
+
+    function addNotice() {
+      const noticeText = document.getElementById('new-notice').value.trim();
+      if (noticeText) {
+        const newNotice = { text: noticeText, date: new Date().toISOString(), id: Date.now() };
+        notices.push(newNotice);
+        localStorage.setItem('libraryNotices', JSON.stringify(notices));
+        renderNotices();
+        cancelAddNotice();
+        generateCalendar();
+      }
+    }
+
+    function deleteNotice(id) {
+      notices = notices.filter(notice => notice.id !== id);
+      localStorage.setItem('libraryNotices', JSON.stringify(notices));
+      renderNotices();
+      generateCalendar();
+    }
+
+    function renderNotices() {
+      const noticeList = document.getElementById('notice-list');
+      noticeList.innerHTML = notices.map(notice => `
+        <div class="notice-item">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <small class="text-muted">${new Date(notice.date).toLocaleDateString()}</small>
+              <div>${notice.text}</div>
+            </div>
+            <i class="fas fa-times delete-notice" onclick="deleteNotice(${notice.id})"></i>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderNotices();
+      generateCalendar();
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LM - Manage Issued Books</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&family=Libre+Baskerville&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --parchment: #e6d5c3;
+      --leather-light: #bc9b72;
+      --leather-dark: #6d4c41;
+      --cream: #fff8f0;
+      --ink: #5d4037;
+    }
+    body {
+      font-family: 'Libre Baskerville', serif;
+      background: var(--parchment) url("https://st.depositphotos.com/1681248/3460/v/450/depositphotos_34600259-stock-illustration-light-orange-soft-vector-abstract.jpg") no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      padding: 2rem;
+      color: var(--ink);
+    }
+    .container {
+      background: linear-gradient(180deg, var(--leather-light), var(--leather-dark));
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 0 20px rgba(109, 76, 65, 0.6), inset 0 0 20px rgba(255, 248, 240, 0.3);
+      color: var(--cream);
+    }
+    h2 {
+      font-family: 'Cinzel', serif;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+    }
+    table {
+      background-color: var(--cream);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: center;
+      vertical-align: middle;
+    }
+    .form-section {
+      margin-top: 2rem;
+    }
+    .btn {
+      font-family: 'Cinzel', serif;
+      font-weight: bold;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2><i class="fas fa-book-reader me-2"></i>Issued Book Manager</h2>
+      <a href="lib_dash.html" class="btn btn-outline-light">← Back to Dashboard</a>
+    </div>
+
+    <table class="table table-bordered table-striped text-dark">
+      <thead class="table-warning">
+        <tr>
+          <th>Student Name</th>
+          <th>Book Title</th>
+          <th>Issue Date</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="issued-list"></tbody>
+    </table>
+
+    <div class="form-section">
+      <h4>Add New Issue</h4>
+      <form id="issue-form" class="row g-3">
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="student" placeholder="Student Name" required>
+        </div>
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="book" placeholder="Book Title" required>
+        </div>
+        <div class="col-md-2">
+          <input type="date" class="form-control" id="issue-date" required>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-success w-100">➕ Issue Book</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script>
+    const issueForm = document.getElementById('issue-form');
+    const issueList = document.getElementById('issued-list');
+
+    const issuedBooks = [];
+
+    issueForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const student = document.getElementById('student').value.trim();
+      const book = document.getElementById('book').value.trim();
+      const issueDate = new Date(document.getElementById('issue-date').value);
+      const dueDate = new Date(issueDate);
+      dueDate.setDate(issueDate.getDate() + 14);
+
+      const record = {
+        id: Date.now(),
+        student,
+        book,
+        issueDate: issueDate.toLocaleDateString(),
+        dueDate: dueDate.toLocaleDateString(),
+        returned: false
+      };
+
+      issuedBooks.push(record);
+      renderTable();
+      issueForm.reset();
+    });
+
+    function renderTable() {
+      issueList.innerHTML = '';
+      issuedBooks.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.student}</td>
+          <td>${item.book}</td>
+          <td>${item.issueDate}</td>
+          <td>${item.dueDate}</td>
+          <td>${item.returned ? 'Returned' : 'Issued'}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" onclick="returnBook(${item.id})" ${item.returned ? 'disabled' : ''}>
+              Return
+            </button>
+          </td>
+        `;
+        issueList.appendChild(row);
+      });
+    }
+
+    function returnBook(id) {
+      const book = issuedBooks.find(b => b.id === id);
+      if (book) {
+        book.returned = true;
+        renderTable();
+      }
+    }
+  </script>
+</body>
+</html>
